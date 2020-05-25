@@ -429,6 +429,8 @@ static time_t debugtime(void *unused)
 #define time(x) debugtime(x)
 #endif
 
+#define ISNEWLINE(x) (((x) == '\n') || (x) == '\r')
+
 /*
  * Curl_altsvc_parse() takes an incoming alt-svc response header and stores
  * the data correctly in the cache.
@@ -523,7 +525,7 @@ CURLcode Curl_altsvc_parse(struct Curl_easy *data,
           if(!*p || *p == ',')
             break;
           p++; /* pass the semicolon */
-          if(!*p)
+          if(!*p || ISNEWLINE(*p))
             break;
           result = getalnum(&p, option, sizeof(option));
           if(result) {
